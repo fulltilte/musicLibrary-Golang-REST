@@ -1,0 +1,196 @@
+basePath: /
+definitions:
+  models.Song:
+    properties:
+      group:
+        type: string
+      link:
+        type: string
+      releaseDate:
+        type: string
+      song:
+        type: string
+      songText:
+        type: string
+    type: object
+host: localhost:8002
+info:
+  contact: {}
+  description: API для управления библиотекой песен
+  title: Music Library API
+  version: "1.0"
+paths:
+  /songs:
+    get:
+      description: Возвращает список песен с возможностью фильтрации по группе и названию,
+        а также с пагинацией
+      parameters:
+      - description: Фильтр по группе
+        in: query
+        name: group
+        type: string
+      - description: Фильтр по названию песни
+        in: query
+        name: song
+        type: string
+      - default: 1
+        description: Номер страницы
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Количество песен на странице
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: Список песен
+          schema:
+            items:
+              $ref: '#/definitions/models.Song'
+            type: array
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Получение списка песен
+      tags:
+      - Songs
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новую песню с информацией о группе и названии
+      parameters:
+      - description: Данные новой песни
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.Song'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Сообщение об успешном добавлении
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Ошибка в данных запроса
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Добавление новой песни
+      tags:
+      - Songs
+  /songs/{id}:
+    delete:
+      description: Удаляет песню по её ID
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Сообщение об успешном удалении
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Песня не найдена
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Удаление песни
+      tags:
+      - Songs
+    put:
+      consumes:
+      - application/json
+      description: Обновляет информацию о песне по её ID
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новые данные песни
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.Song'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Сообщение об успешном обновлении
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Ошибка в данных запроса
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Песня не найдена
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Обновление информации о песне
+      tags:
+      - Songs
+  /songs/{id}/text:
+    get:
+      description: Возвращает текст песни по её ID с пагинацией по куплетам
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      - default: 1
+        description: Номер страницы
+        in: query
+        name: page
+        type: integer
+      - default: 1
+        description: Количество куплетов на странице
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: Куплеты песни с пагинацией
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Получение текста песни
+      tags:
+      - Songs
+swagger: "2.0"

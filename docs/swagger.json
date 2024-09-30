@@ -1,0 +1,287 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API для управления библиотекой песен",
+        "title": "Music Library API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8002",
+    "basePath": "/",
+    "paths": {
+        "/songs": {
+            "get": {
+                "description": "Возвращает список песен с возможностью фильтрации по группе и названию, а также с пагинацией",
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Получение списка песен",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Фильтр по группе",
+                        "name": "group",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Фильтр по названию песни",
+                        "name": "song",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Номер страницы",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Количество песен на странице",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список песен",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Song"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Добавляет новую песню с информацией о группе и названии",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Добавление новой песни",
+                "parameters": [
+                    {
+                        "description": "Данные новой песни",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Song"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Сообщение об успешном добавлении",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка в данных запроса",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/{id}": {
+            "put": {
+                "description": "Обновляет информацию о песне по её ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Обновление информации о песне",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID песни",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Новые данные песни",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Song"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Сообщение об успешном обновлении",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка в данных запроса",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Песня не найдена",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаляет песню по её ID",
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Удаление песни",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID песни",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Сообщение об успешном удалении",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Песня не найдена",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/{id}/text": {
+            "get": {
+                "description": "Возвращает текст песни по её ID с пагинацией по куплетам",
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Получение текста песни",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID песни",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Номер страницы",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Количество куплетов на странице",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Куплеты песни с пагинацией",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Song": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "releaseDate": {
+                    "type": "string"
+                },
+                "song": {
+                    "type": "string"
+                },
+                "songText": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
